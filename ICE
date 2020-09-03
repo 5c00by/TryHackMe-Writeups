@@ -1,0 +1,61 @@
+#Room Description
+Ice
+  
+Deploy & hack into a Windows machine, exploiting a very poorly secured media server.
+
+# Questions/Tasks
+
+#1 
+Deploy the machine! This may take up to three minutes to start.
+
+No answer needed
+
+#2	
+Launch a scan against our target machine, I recommend using a SYN scan set to scan all ports on the machine. The scan command will be provided as a hint, however, it's recommended to complete the room 'RP: Nmap' prior to this room. 
+
+No answer needed
+
+- Note: Ran db_nmap 'BOX IP ADDRESS' and got following results:
+msf5 exploit(windows/http/icecast_header) > set RHOST 10.10.171.143
+RHOST => 10.10.171.143
+msf5 exploit(windows/http/icecast_header) > db_nmap -sV 10.10.171.143
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-03 07:01 UTC
+[*] Nmap: Nmap scan report for ip-10-10-171-143.eu-west-1.compute.internal (10.10.171.143)
+[*] Nmap: Host is up (0.00048s latency).
+[*] Nmap: Not shown: 988 closed ports
+[*] Nmap: PORT      STATE SERVICE      VERSION
+[*] Nmap: 135/tcp   open  msrpc        Microsoft Windows RPC
+[*] Nmap: 139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+[*] Nmap: 445/tcp   open  microsoft-ds Microsoft Windows 7 - 10 microsoft-ds (workgroup: WORKGROUP)
+[*] Nmap: 3389/tcp  open  tcpwrapped
+[*] Nmap: 5357/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+[*] Nmap: 8000/tcp  open  http         Icecast streaming media server
+[*] Nmap: 49152/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: 49153/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: 49154/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: 49159/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: 49160/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: 49161/tcp open  msrpc        Microsoft Windows RPC
+[*] Nmap: MAC Address: 02:F2:26:27:EA:4F (Unknown)
+[*] Nmap: Service Info: Host: DARK-PC; OS: Windows; CPE: cpe:/o:microsoft:windows
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 67.50 seconds
+
+
+#3	
+Once the scan completes, we'll see a number of interesting ports open on this machine. As you might have guessed, the firewall has been disabled (with the service completely shutdown), leaving very little to protect this machine. One of the more interesting ports that is open is Microsoft Remote Desktop (MSRDP). What port is this open on?
+
+- Note: while it is a MSRDP the actual listing was 3389/tcp  open  tcpwrapped
+
+3389 
+
+#4	
+What service did nmap identify as running on port 8000? (First word of this service)
+
+icecast
+
+#5	
+What does Nmap identify as the hostname of the machine? (All caps for the answer)
+
+DARK-PC
+

@@ -78,6 +78,21 @@ Answer format: ******* **** ********
 
 Execute Code Overflow
 
+Note: This is description from the page on the CVE
+CVSS Score	7.5
+Confidentiality Impact	Partial (There is considerable informational disclosure.)
+Integrity Impact	Partial (Modification of some system files or information is possible, but the attacker does not have control over what can be modified, or the scope of what the attacker can affect is limited.)
+Availability Impact	Partial (There is reduced performance or interruptions in resource availability.)
+Access Complexity	Low (Specialized access conditions or extenuating circumstances do not exist. Very little knowledge or skill is required to exploit. )
+Authentication	Not required (Authentication is not required to exploit the vulnerability.)
+Gained Access	User
+Vulnerability Type(s)	Execute CodeOverflow
+CWE ID	CWE id is not defined for this vulnerability
+
+This module exploits a buffer overflow in the header parsing of icecast versions 2.0.1 and earlier, discovered by Luigi Auriemma. Sending 32 HTTP headers will cause a write one past the end of a pointer array. On win32 this happens to overwrite the saved instruction pointer, and on linux (depending on compiler, etc) this seems to generally overwrite nothing crucial (read not exploitable). This exploit uses ExitThread(), this will leave icecast thinking the thread is still in use, and the thread counter won't be decremented. This means for each time your payload exits, the counter will be left incremented, and eventually the threadpool limit will be maxed. So you can multihit, but only till you fill the threadpool. 
+Module type : exploit Rank : great Platforms : Windows
+
+
 #2	
 What is the CVE number for this vulnerability? This will be in the format: CVE-0000-0000
 

